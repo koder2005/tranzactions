@@ -1,0 +1,16 @@
+WITH
+gorod AS(
+  SELECT *
+  FROM transactions AS t
+  LEFT JOIN products AS p ON p.id = t.product_id
+LEFT JOIN sellers AS s ON p.seller_id = s.id
+  LEFT JOIN cities AS c ON s.city_id = c.id
+  WHERE c.name = 'Yekaterinburg')
+SELECT  CAST(date_trunc('month', g.created_at) AS date) AS month,
+  SUM(g.price) AS total_sales
+FROM gorod AS g
+LEFT JOIN users AS u ON g.user_id = u.id
+WHERE u.name IN('Dmitry', 'Andrew', 'Evgeniy') AND g.status = 'completed'
+GROUP BY month
+ORDER BY total_sales DESC 
+LIMIT 3
